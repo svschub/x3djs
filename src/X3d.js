@@ -12,10 +12,13 @@ X3d.loadSceneFromX3d = function(x3dNode) {
 
     X3d.sceneCamera = null;
 
-    X3d.ambientLightColor = new THREE.Color(0.0, 0.0, 0.0);
+    X3d.ambientLights = [];
 
     X3d.scene = X3d.Node.parse(X3d.x3dSceneNode);
-    X3d.scene.add(X3d.getAmbientLight());
+
+    X3d.ambientLights.forEach(function(ambientLight) {
+        X3d.scene.add(ambientLight);
+    });
 };
 
 X3d.getScene = function () {
@@ -26,8 +29,8 @@ X3d.getCamera = function () {
     return X3d.sceneCamera;
 };
 
-X3d.getAmbientLight = function () {
-    return new THREE.AmbientLight(X3d.ambientLightColor.getHex());
+X3d.getAmbientLights = function () {
+    return ambientLights;
 };
 
 X3d.hasNode = function(identifier) {

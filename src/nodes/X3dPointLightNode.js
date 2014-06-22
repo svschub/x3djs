@@ -34,7 +34,12 @@ X3d.PointLightNode.prototype.parse = function() {
     if (attribute) {
         values = this.parseFloatArray(attribute);
         ambientIntensity = values[0];
-        X3d.ambientLightColor.add(lightColor.multiplyScalar(ambientIntensity));
+        if (ambientIntensity > 0.0) {
+            console.log('adding ambient light component with intensity ' + ambientIntensity);
+            X3d.ambientLights.push(new THREE.AmbientLight(
+                lightColor.multiplyScalar(ambientIntensity).getHex()
+            ));
+        }
     }
 
     attribute = this.node.attr('radius');
