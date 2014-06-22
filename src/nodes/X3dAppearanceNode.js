@@ -31,5 +31,11 @@ X3d.AppearanceNode.prototype.parse = function() {
         }
     });
 
+    if (typeof appearance.material === "undefined") {
+        appearance.material = {
+            diffuseColor: new THREE.Color(1.0, 1.0, 1.0)
+        };
+    }
+
     return appearance;
 };
