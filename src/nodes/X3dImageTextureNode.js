@@ -7,13 +7,15 @@ X3d.ImageTextureNode.prototype = Object.create(X3d.Node.prototype);
 X3d.ImageTextureNode.prototype.parse = function() {
     var texture = {},
         attribute,
-        values;
+        matches;
 
     console.log('parsing X3D image texture');
 
     attribute = this.node.attr('url');
     if (attribute) {
-        texture.url = attribute;
+        matches = /(\"|\')([^\s]+)(?:\1)\s+(\"|\')([^\s]+)(?:\3)/.exec(attribute);
+        texture.url = matches[2];
+        texture.name = matches[4];
     }
 
     return texture;

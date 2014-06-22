@@ -3,7 +3,7 @@ X3d = function () {
 
 X3d.setCreateMaterialCallback = function(getMaterial) {
     X3d.getMaterial = getMaterial;
-}
+};
 
 X3d.loadSceneFromX3d = function(x3dNode) {
     X3d.cachedNodes = {};
