@@ -146,7 +146,7 @@ X3d.ShapeNode.prototype.parse = function() {
                 }
             });
 
-            indexedFaceSet.point.forEach(function(vertex) {
+            indexedFaceSet.vertexCoordinates.forEach(function(vertex) {
                 vertices.push(vertex.clone());
             });
 

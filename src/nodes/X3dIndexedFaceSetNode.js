@@ -35,7 +35,7 @@ X3d.IndexedFaceSetNode.prototype.parse = function() {
         try {
             child = X3d.Node.parse($(this));
             if ($(this).prop('tagName') === "Coordinate") {
-                indexedFaceSet.point = child;
+                indexedFaceSet.vertexCoordinates = child;
             }
         } catch (e) {
             throw e;
