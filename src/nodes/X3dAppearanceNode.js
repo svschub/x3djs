@@ -32,9 +32,12 @@ X3d.AppearanceNode.prototype.parse = function() {
     });
 
     if (typeof appearance.material === "undefined") {
+        console.log('adding standard material');
         appearance.material = {
-            diffuseColor: new THREE.Color(1.0, 1.0, 1.0)
+            diffuseColor: new THREE.Color()
         };
+
+        appearance.material.diffuseColor.setRGB(1.0, 1.0, 1.0);
     }
 
     return appearance;

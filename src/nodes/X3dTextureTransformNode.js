@@ -13,14 +13,12 @@ X3d.TextureTransformNode.prototype.parse = function() {
 
     attribute = this.node.attr('translation');
     if (attribute) {
-        values = this.parseFloatArray(attribute);
-        textureTransform.transform = new THREE.Vector2(values[0], values[1]);
+        textureTransform.transform = this.parseVector2(attribute);
     }
 
     attribute = this.node.attr('scale');
     if (attribute) {
-        values = this.parseFloatArray(attribute);
-        textureTransform.scale = new THREE.Vector2(values[0], values[1]);
+        textureTransform.scale = this.parseVector2(attribute);
     }
 
     attribute = this.node.attr('rotation');

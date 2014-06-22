@@ -52,6 +52,9 @@ X3d.Node.getInstance = function(node) {
         case "Coordinate":
             nodeInstance = new X3d.CoordinateNode(node);
             break;
+        case "TextureCoordinate":
+            nodeInstance = new X3d.TextureCoordinateNode(node);
+            break;
         default:
             throw new X3d.UnknownNodeException();
     }
@@ -109,6 +112,26 @@ X3d.Node.prototype.parseFloatArray = function(str) {
     return this.parseArray(str, function(x) {
         return parseFloat(x);
     });
+};
+
+X3d.Node.prototype.parseVector2 = function(str) {
+    var coordinates = this.parseFloatArray(str);
+
+    return new THREE.Vector2(coordinates[0], coordinates[1]);
+};
+
+X3d.Node.prototype.parseVector2Array = function(str) {
+    var coordinates = this.parseFloatArray(str),
+        n = coordinates.length,
+        vectors = [],
+        i = 0;
+
+    while (i < n) {
+        vectors.push(new THREE.Vector2(coordinates[i], coordinates[i + 1]));
+        i = i + 2;
+    }
+
+    return vectors;
 };
 
 X3d.Node.prototype.parseVector3 = function(str) {

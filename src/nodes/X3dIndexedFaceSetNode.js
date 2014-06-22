@@ -31,11 +31,24 @@ X3d.IndexedFaceSetNode.prototype.parse = function() {
         indexedFaceSet.coordIndex = this.parseIntArray(attribute);
     }
 
+    attribute = this.node.attr('texCoordIndex');
+    if (attribute) {
+        indexedFaceSet.texCoordIndex = this.parseIntArray(attribute);
+    }
+
     this.node.children().each(function() {
+        var childNode = $(this);
+
         try {
-            child = X3d.Node.parse($(this));
-            if ($(this).prop('tagName') === "Coordinate") {
-                indexedFaceSet.vertexCoordinates = child;
+            child = X3d.Node.parse(childNode);
+            switch (childNode.prop('tagName')) {
+                case "Coordinate":
+                    indexedFaceSet.vertexCoordinates = child;
+                    break;
+                case "TextureCoordinate":
+                    indexedFaceSet.textureCoordinates = child;
+                    break;
+                default:
             }
         } catch (e) {
             throw e;
