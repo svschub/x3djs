@@ -1,6 +1,32 @@
 X3d = function () {
 };
 
+X3d.getMaterial = function(node, appearance) {
+    var material,
+        properties = {},
+        texture,
+        isTransparent = (appearance.material.transparency && appearance.material.transparency > 0.0);
+
+    properties.shading = THREE.SmoothShading;
+ 
+    properties.vertexColors = THREE.VertexColors;
+
+    if (appearance.texture && appearance.texture.name) {
+        texture = THREE.ImageUtils.loadTexture(appearance.texture.name);
+        texture.needsUpdate = true;
+        properties.map = texture;
+    }
+
+    if (isTransparent) {
+        properties.transparent = isTransparent;
+        properties.opacity = 1.0 - appearance.material.transparency;
+    }
+
+    material = new THREE.MeshLambertMaterial(properties);
+
+    return material;
+}
+
 X3d.setCreateMaterialCallback = function(getMaterial) {
     X3d.getMaterial = getMaterial;
 };

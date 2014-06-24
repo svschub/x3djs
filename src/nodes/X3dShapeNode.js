@@ -19,6 +19,35 @@ X3d.ShapeNode.prototype.parse = function() {
             }
         },
 
+        createUvVectors = function(geometry, texCoordIndex, textureCoordinates) {
+            var faceVertices = [0, 0, 0],
+                vertexCounter = 0;
+
+            console.log('creating UV coordinates: ' + JSON.stringify(texCoordIndex) + ', ' + JSON.stringify(textureCoordinates));
+
+            texCoordIndex.forEach(function(index) {
+                if (index >= 0) {
+                    if (vertexCounter < 3) {
+                        faceVertices[vertexCounter] = index;
+                        vertexCounter++;
+                    }
+
+                    if (vertexCounter == 3) {
+                        geometry.faceVertexUvs[0].push([
+                            new THREE.Vector2(textureCoordinates[faceVertices[0]].x, textureCoordinates[faceVertices[0]].y), 
+                            new THREE.Vector2(textureCoordinates[faceVertices[1]].x, textureCoordinates[faceVertices[1]].y), 
+                            new THREE.Vector2(textureCoordinates[faceVertices[2]].x, textureCoordinates[faceVertices[2]].y) 
+                        ]);
+
+                        faceVertices[1] = index;
+                        vertexCounter = 2;
+                    }
+                } else {
+                    vertexCounter = 0;
+                }
+            });
+        },
+
         computeVertexNormals = function(faces, cosCreaseAngle) {
             var vertices = {},
                 faceIndex,
@@ -172,6 +201,12 @@ X3d.ShapeNode.prototype.parse = function() {
 
             if (indexedFaceSet.creaseAngle > 0.0) {
                 computeVertexNormals(geometry.faces, Math.cos(indexedFaceSet.creaseAngle));
+            }
+
+            if (appearance.texture &&
+                indexedFaceSet.textureCoordinates.length > 0 &&
+                indexedFaceSet.texCoordIndex.length > 0) {
+                createUvVectors(geometry, indexedFaceSet.texCoordIndex, indexedFaceSet.textureCoordinates);
             }
 
             return geometry;
