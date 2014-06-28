@@ -15,8 +15,7 @@ X3d.DirectionalLightNode.prototype.parse = function() {
 
     attribute = this.node.attr('direction');
     if (attribute) {
-        values = this.parseFloatArray(attribute);
-        this.direction = new THREE.Vector3(values[0], values[1], values[2]);
+        this.direction = this.parseVector3(attribute);
     }
 
     light = new THREE.DirectionalLight(this.color.getHex(), this.intensity);

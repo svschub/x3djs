@@ -31,6 +31,9 @@ X3d.Node.getInstance = function(node) {
         case "PointLight":
             nodeInstance = new X3d.PointLightNode(node);
             break;
+        case "SpotLight":
+            nodeInstance = new X3d.SpotLightNode(node);
+            break;
         case "Viewpoint":
             nodeInstance = new X3d.ViewpointNode(node);
             break;
