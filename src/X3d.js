@@ -44,6 +44,8 @@ X3d.loadSceneFromX3d = function(x3dNode) {
 
     X3d.sceneCamera = null;
 
+    X3d.background = {};
+
     X3d.ambientLights = [];
 
     X3d.scene = X3d.Node.parse(X3d.x3dSceneNode);
