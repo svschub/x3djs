@@ -8,6 +8,7 @@ X3d.ShapeNode.prototype.parse = function() {
     var child,
         appearance = null,
         indexedFaceSet = null,
+        indexedLineSet = null,
         mesh = null,
 
         adjustNormalsMutuallyIfNecessary = function(face1, normal1, face2, normal2, cosCreaseAngle) {
@@ -147,14 +148,14 @@ X3d.ShapeNode.prototype.parse = function() {
             }
         },
 
-        createGeometry = function(indexedFaceSet, appearance) {
+        createFaceGeometry = function(indexedFaceSet, appearance) {
             var geometry = new THREE.Geometry(),
                 vertices = [],
                 faceVertices = [0, 0, 0],
                 face,
                 vertexCounter = 0;
 
-            console.log("creating geometry...");
+            console.log("creating face geometry...");
 
             geometry.faces = [];
             indexedFaceSet.coordIndex.forEach(function(index) {
@@ -210,6 +211,97 @@ X3d.ShapeNode.prototype.parse = function() {
             }
 
             return geometry;
+        },
+
+        createLineGeometry = function(indexedLineSet, appearance) {
+            var lines = new THREE.Object3D(),
+                lineStripGeometry,
+                lineStripLength = 0,
+                lineStripCounter = 0,
+                indexCounter = 0,
+                colorIndex,
+                materialProperties = {},
+                finalizeLineStrip = function () {
+                    lines.add(new THREE.Line(
+                        lineStripGeometry,
+                        new THREE.LineBasicMaterial(materialProperties)
+                    ));                        
+
+                    lineStripLength = 0;
+                    lineStripCounter++;
+                };
+
+            console.log("creating line strips...");
+
+
+            if (indexedLineSet.colorIndex && indexedLineSet.vertexColors) {
+                materialProperties.vertexColors = THREE.VertexColors;
+            } else if (appearance.material && appearance.material.emissiveColor) {
+                materialProperties.color = appearance.material.emissiveColor.getHex();
+            } else {
+                materialProperties.color = 0xffffff;
+            }
+
+            if (appearance.lineProperties && appearance.lineProperties.lineWidth) {
+                materialProperties.linewidth = appearance.lineProperties.lineWidth;
+            } else {
+                materialProperties.linewidth = 1.0;
+            }
+
+            if (appearance.material &&
+                appearance.material.transparency && 
+                appearance.material.transparency > 0.0) {
+
+                materialProperties.transparent = true;
+                materialProperties.opacity = 1.0 - appearance.material.transparency;
+            }
+
+
+            indexedLineSet.coordIndex.forEach(function(index) {
+                var vertexColor;
+
+                if (index >= 0) {
+                    if (lineStripLength == 0) {
+                        lineStripGeometry = new THREE.Geometry();
+                        lineStripGeometry.vertices = [];
+                        lineStripGeometry.colors = [];
+//                        lineStripGeometry.colorsNeedUpdate = true;
+                    }
+
+                    lineStripGeometry.vertices.push(new THREE.Vector3(
+                        indexedLineSet.vertexCoordinates[index].x,    
+                        indexedLineSet.vertexCoordinates[index].y,    
+                        indexedLineSet.vertexCoordinates[index].z    
+                    ));
+
+                    if (indexedLineSet.colorIndex && indexedLineSet.vertexColors) {
+                        colorIndex = indexedLineSet.colorIndex[indexCounter];
+
+                        vertexColor = new THREE.Color();
+                        vertexColor.setRGB(
+                            indexedLineSet.vertexColors[colorIndex].r,    
+                            indexedLineSet.vertexColors[colorIndex].g,    
+                            indexedLineSet.vertexColors[colorIndex].b    
+                        );
+
+                        lineStripGeometry.colors.push(vertexColor);
+                    }
+
+                    lineStripLength++;
+                } else {
+                    if (lineStripLength > 0) {
+                        finalizeLineStrip();
+                    }
+                }
+
+                indexCounter++;
+            });
+
+            if (lineStripLength > 0) {
+                finalizeLineStrip();
+            }
+
+            return lines;
         };
         
 
@@ -228,6 +320,10 @@ X3d.ShapeNode.prototype.parse = function() {
                     indexedFaceSet = child;
                     console.log('indexed face set: ' + JSON.stringify(indexedFaceSet));
                     break;
+                case "IndexedLineSet":
+                    indexedLineSet = child;
+                    console.log('indexed line set: ' + JSON.stringify(indexedLineSet));
+                    break;
                 default:
             }
         } catch (e) {
@@ -235,11 +331,15 @@ X3d.ShapeNode.prototype.parse = function() {
         }
     });
 
-    if (indexedFaceSet && appearance) {
-        mesh = new THREE.Mesh(
-            createGeometry(indexedFaceSet, appearance),
-            X3d.getMaterial(this.node, appearance)
-        );
+    if (indexedFaceSet) {
+        if (appearance) {
+            mesh = new THREE.Mesh(
+                createFaceGeometry(indexedFaceSet, appearance),
+                X3d.getMaterial(this.node, appearance)
+            );
+        }
+    } else if (indexedLineSet) {
+        mesh = createLineGeometry(indexedLineSet, appearance);
     }
 
     return mesh;

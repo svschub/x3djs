@@ -40,6 +40,9 @@ X3d.Node.getInstance = function(node) {
         case "Material":
             nodeInstance = new X3d.MaterialNode(node);
             break;
+        case "LineProperties":
+            nodeInstance = new X3d.LinePropertiesNode(node);
+            break;
         case "ImageTexture":
             nodeInstance = new X3d.ImageTextureNode(node);
             break;
@@ -49,11 +52,17 @@ X3d.Node.getInstance = function(node) {
         case "IndexedFaceSet":
             nodeInstance = new X3d.IndexedFaceSetNode(node);
             break;
+        case "IndexedLineSet":
+            nodeInstance = new X3d.IndexedLineSetNode(node);
+            break;
         case "Coordinate":
             nodeInstance = new X3d.CoordinateNode(node);
             break;
         case "TextureCoordinate":
             nodeInstance = new X3d.TextureCoordinateNode(node);
+            break;
+        case "Color":
+            nodeInstance = new X3d.ColorNode(node);
             break;
         default:
             throw new X3d.UnknownNodeException();

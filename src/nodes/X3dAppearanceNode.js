@@ -18,6 +18,9 @@ X3d.AppearanceNode.prototype.parse = function() {
                 case "Material":
                     appearance.material = child;
                     break;
+                case "LineProperties":
+                    appearance.lineProperties = child;
+                    break;
                 case "ImageTexture":
                     appearance.texture = child;
                     break;
