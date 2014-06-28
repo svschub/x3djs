@@ -11,6 +11,12 @@ X3d.getMaterial = function(node, appearance) {
  
     properties.vertexColors = THREE.VertexColors;
 
+    if (appearance.material.solid) {
+        properties.side = THREE.FrontSide;
+    } else {
+        properties.side = THREE.DoubleSide;
+    }
+
     if (appearance.texture && appearance.texture.name) {
         texture = THREE.ImageUtils.loadTexture(appearance.texture.name);
         texture.needsUpdate = true;

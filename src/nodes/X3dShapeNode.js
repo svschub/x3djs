@@ -6,7 +6,7 @@ X3d.ShapeNode.prototype = Object.create(X3d.Node.prototype);
 
 X3d.ShapeNode.prototype.parse = function() {
     var child,
-        appearance = null,
+        appearance = {},
         indexedFaceSet = null,
         indexedLineSet = null,
         mesh = null,
@@ -332,12 +332,21 @@ X3d.ShapeNode.prototype.parse = function() {
     });
 
     if (indexedFaceSet) {
-        if (appearance) {
-            mesh = new THREE.Mesh(
-                createFaceGeometry(indexedFaceSet, appearance),
-                X3d.getMaterial(this.node, appearance)
-            );
+        if (typeof appearance.material === "undefined") {
+            console.log('no material found, adding standard material');
+            appearance.material = {
+                diffuseColor: new THREE.Color()
+            };
+
+            appearance.material.diffuseColor.setRGB(1.0, 1.0, 1.0);
         }
+
+        appearance.material.solid = indexedFaceSet.solid;
+
+        mesh = new THREE.Mesh(
+            createFaceGeometry(indexedFaceSet, appearance),
+            X3d.getMaterial(this.node, appearance)
+        );
     } else if (indexedLineSet) {
         mesh = createLineGeometry(indexedLineSet, appearance);
     }

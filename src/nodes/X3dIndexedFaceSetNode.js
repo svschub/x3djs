@@ -16,6 +16,8 @@ X3d.IndexedFaceSetNode.prototype.parse = function() {
     attribute = this.node.attr('solid');
     if (attribute) {
         indexedFaceSet.solid = (attribute === "true");
+    } else {
+        indexedFaceSet.solid = false;
     }
 
     attribute = this.node.attr('creaseAngle');
