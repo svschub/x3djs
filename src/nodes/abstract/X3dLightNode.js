@@ -12,6 +12,13 @@ X3d.LightNode.prototype.parseBasicLightProperties = function() {
 
     console.log('parsing X3D light');
 
+    attribute = this.node.attr('on');
+    if (attribute) {
+        this.on = (attribute == "TRUE"); 
+    } else {
+        this.on = true;
+    }
+
     this.color = new THREE.Color();
     attribute = this.node.attr('color');
     if (attribute) {
@@ -41,4 +48,9 @@ X3d.LightNode.prototype.parseBasicLightProperties = function() {
             X3d.ambientLights.push(new THREE.AmbientLight(ambientColor.getHex()));
         }
     }
+};
+
+
+THREE.Light.prototype.transformByMatrix = function(transformationMatrix) {
+    this.applyMatrix(transformationMatrix);
 };

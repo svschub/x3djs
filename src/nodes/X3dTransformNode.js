@@ -54,11 +54,11 @@ X3d.TransformNode.prototype.parse = function() {
         try {
             child = X3d.Node.parse($(this));
             if (self.isCamera(child)) {
-                child.applyMatrix(transformationMatrix);
+                child.transformByMatrix(transformationMatrix);
                 X3d.sceneCamera = child;
                 returnNothing = true;
             } else if (self.isLightSource(child)) {
-                child.applyMatrix(transformationMatrix);
+                child.transformByMatrix(transformationMatrix);
                 lightSource = child;
             } else {
                 object3d.add(child);

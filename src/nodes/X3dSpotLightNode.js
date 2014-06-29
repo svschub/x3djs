@@ -41,20 +41,34 @@ X3d.SpotLightNode.prototype.parse = function() {
         this.angle = values[0];
     }
 
-    this.exponent = 10.0;
+    attribute = this.node.attr('attenuation');
+    if (attribute) {
+        this.attenuation = this.parseFloatArray(attribute);
+    }
 
-    light = new THREE.SpotLightNode(
+    this.exponent = 1.0;
+
+    light = new THREE.SpotLight(
         this.color.getHex(), 
         this.intensity, 
-        this.distance, 
+        this.distance,
+        this.angle,
         this.exponent
     );
 
-    light.position = this.location;
+    light.position.copy(this.location);
 
-    light.target = new THREE.Object3D();
     light.target.position.copy(this.location);
     light.target.position.add(this.direction);
 
+    console.log('spotlight node: ' + JSON.stringify(this));
+    console.log('spotlight target: ' + JSON.stringify(light.target.position));
+
     return light;
+};
+
+
+THREE.SpotLight.prototype.transformByMatrix = function(transformationMatrix) {
+    this.applyMatrix(transformationMatrix);
+    this.target.position.applyMatrix4(transformationMatrix);
 };

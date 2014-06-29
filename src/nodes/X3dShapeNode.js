@@ -153,6 +153,7 @@ X3d.ShapeNode.prototype.parse = function() {
                 vertices = [],
                 faceVertices = [0, 0, 0],
                 face,
+                vertexColor,
                 vertexCounter = 0;
 
             console.log("creating face geometry...");
@@ -186,6 +187,12 @@ X3d.ShapeNode.prototype.parse = function() {
             geometry.computeFaceNormals();
             geometry.computeCentroids();
 
+            if (appearance.material.diffuseColor) {
+                vertexColor = appearance.material.diffuseColor;
+            } else {
+                vertexColor = appearance.material.emissiveColor;
+            }
+
             geometry.faces.forEach(function(face) {
                 face.vertexNormals = [
                     face.normal.clone(),
@@ -194,9 +201,9 @@ X3d.ShapeNode.prototype.parse = function() {
                 ];
 
                 face.vertexColors = [
-                    appearance.material.diffuseColor.clone(),
-                    appearance.material.diffuseColor.clone(),
-                    appearance.material.diffuseColor.clone()
+                    vertexColor.clone(),
+                    vertexColor.clone(),
+                    vertexColor.clone()
                 ];
             });
 
