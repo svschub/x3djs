@@ -43,15 +43,13 @@ X3d.loadSceneFromX3d = function(x3dNode) {
     X3d.x3dSceneNode = x3dNode.find("Scene");
 
     X3d.sceneCamera = null;
-
     X3d.background = {};
-
-    X3d.ambientLights = [];
+    X3d.lights = [];
 
     X3d.scene = X3d.Node.parse(X3d.x3dSceneNode);
 
-    X3d.ambientLights.forEach(function(ambientLight) {
-        X3d.scene.add(ambientLight);
+    X3d.lights.forEach(function(light) {
+        X3d.scene.add(light);
     });
 };
 
@@ -73,4 +71,14 @@ X3d.hasNode = function(identifier) {
 
 X3d.getNode = function(identifier) {
     return X3d.cachedNodes[identifier];
+};
+
+X3d.transformObjectByMatrix = function(object, transformationMatrix) {
+    if (object instanceof THREE.Object3D) {
+        object.applyMatrix(transformationMatrix);
+
+        if (object instanceof THREE.SpotLight) {
+            object.target.position.applyMatrix4(transformationMatrix);
+        }
+    }
 };

@@ -66,9 +66,3 @@ X3d.SpotLightNode.prototype.parse = function() {
 
     return light;
 };
-
-
-THREE.SpotLight.prototype.transformByMatrix = function(transformationMatrix) {
-    this.applyMatrix(transformationMatrix);
-    this.target.position.applyMatrix4(transformationMatrix);
-};

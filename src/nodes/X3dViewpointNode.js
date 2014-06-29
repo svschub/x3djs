@@ -24,8 +24,3 @@ X3d.ViewpointNode.prototype.parse = function(node) {
 
     return camera;
 };
-
-
-THREE.Camera.prototype.transformByMatrix = function(transformationMatrix) {
-    this.applyMatrix(transformationMatrix);
-};

@@ -12,10 +12,7 @@ X3d.TransformNode.prototype.parse = function() {
         position,
         scale,
         quaternion,
-        transformationMatrix,
-        child,
-        returnNothing = false,
-        lightSource = null;
+        transformationMatrix;
 
     console.log('parsing X3D transform ' + self.node.attr('DEF'));
 
@@ -51,15 +48,17 @@ X3d.TransformNode.prototype.parse = function() {
     }
 
     this.node.children().each(function() {
+        var child;
+
         try {
             child = X3d.Node.parse($(this));
+
             if (self.isCamera(child)) {
-                child.transformByMatrix(transformationMatrix);
+                X3d.transformObjectByMatrix(child, transformationMatrix);
                 X3d.sceneCamera = child;
-                returnNothing = true;
             } else if (self.isLightSource(child)) {
-                child.transformByMatrix(transformationMatrix);
-                lightSource = child;
+                X3d.transformObjectByMatrix(child, transformationMatrix);
+                X3d.lights.push(child);
             } else {
                 object3d.add(child);
             }
@@ -68,12 +67,11 @@ X3d.TransformNode.prototype.parse = function() {
         }
     });
 
-    if (returnNothing) {
-        return null;
-    } else if (lightSource) {
-        return lightSource;
+    if (object3d.children.length > 0) {
+        object3d.applyMatrix(transformationMatrix);
+    } else {
+        object3d = null;
     }
 
-    object3d.applyMatrix(transformationMatrix);
     return object3d;
 };

@@ -45,12 +45,7 @@ X3d.LightNode.prototype.parseBasicLightProperties = function() {
             ambientColor = new THREE.Color();
             ambientColor.copy(this.color);
             ambientColor.multiplyScalar(ambientIntensity);
-            X3d.ambientLights.push(new THREE.AmbientLight(ambientColor.getHex()));
+            X3d.lights.push(new THREE.AmbientLight(ambientColor.getHex()));
         }
     }
-};
-
-
-THREE.Light.prototype.transformByMatrix = function(transformationMatrix) {
-    this.applyMatrix(transformationMatrix);
 };
