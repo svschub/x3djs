@@ -5,34 +5,29 @@ X3d.AppearanceNode = function(node) {
 X3d.AppearanceNode.prototype = Object.create(X3d.Node.prototype);
 
 X3d.AppearanceNode.prototype.parse = function() {
-    var appearance = {};
+    var self = this;
 
     console.log('parsing X3D appearance');
 
-    this.node.children().each(function() {
+    self.node.children().each(function() {
         var child, childNode = $(this);
 
         try {
             child = X3d.Node.parse(childNode);
-            switch (childNode.prop('tagName')) {
-                case "Material":
-                    appearance.material = child;
-                    break;
-                case "LineProperties":
-                    appearance.lineProperties = child;
-                    break;
-                case "ImageTexture":
-                    appearance.texture = child;
-                    break;
-                case "TextureTransform":
-                    appearance.textureTransform = child;
-                    break;
-                default:
+
+            if (child instanceof X3d.MaterialNode) {
+                self.material = child;
+            } else if (child instanceof X3d.LinePropertiesNode) {
+                self.lineProperties = child;
+            } else if (child instanceof X3d.ImageTextureNode) {
+                self.texture = child;
+            } else if (child instanceof X3d.TextureTransformNode) {
+                self.textureTransform = child;
             }
         } catch (e) {
             throw e;
         }
     });
 
-    return appearance;
+    return self;
 };

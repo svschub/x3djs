@@ -5,10 +5,12 @@ X3d.ColorNode = function(node) {
 X3d.ColorNode.prototype = Object.create(X3d.Node.prototype);
 
 X3d.ColorNode.prototype.parse = function() {
-    var attribute,
+    var self = this,
+        attribute,
         vectors,
-        color,
-        colors = [];
+        color;
+
+    self.colors = [];
 
     console.log('parsing X3D color');
 
@@ -18,9 +20,9 @@ X3d.ColorNode.prototype.parse = function() {
         vectors.forEach(function(vector) {
             color = new THREE.Color();
             color.setRGB(vector.x, vector.y, vector.z);
-            colors.push(color);
+            self.colors.push(color);
         });
     }
 
-    return colors;
+    return self;
 };

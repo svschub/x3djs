@@ -165,11 +165,3 @@ X3d.Node.prototype.parseVector3Array = function(str) {
 
     return vectors;
 };
-
-X3d.Node.prototype.isCamera = function(node) {
-    return (node instanceof THREE.Camera);
-};
-
-X3d.Node.prototype.isLightSource = function(node) {
-    return (node instanceof THREE.Light);
-};
