@@ -18,7 +18,7 @@ X3d.getMaterial = function(node, appearance) {
     }
 
     if (appearance.texture && appearance.texture.name) {
-        texture = THREE.ImageUtils.loadTexture(appearance.texture.name);
+        texture = X3d.textureTree.loadTexture(appearance.texture);
         texture.needsUpdate = true;
         properties.map = texture;
     }
@@ -46,10 +46,32 @@ X3d.loadSceneFromX3d = function(x3dNode) {
     X3d.background = {};
     X3d.lights = [];
 
+    if (!X3d.textureTree) {
+        X3d.textureTree = new X3d.TextureTree();
+    }
+
     X3d.scene = X3d.Node.parse(X3d.x3dSceneNode);
 
     X3d.lights.forEach(function(light) {
         X3d.scene.add(light);
+    });
+};
+
+X3d.loadTextureTreeFromXml = function(xmlFile) {
+    $.ajax({
+        url: xmlFile,
+        type: 'GET',
+        async: false,
+        cache: false,
+        timeout: 30000,
+        data: {},
+        success: function(xmlResponse) {
+            X3d.textureTree = new X3d.TextureTree();
+            X3d.textureTree.loadFromXml($(xmlResponse));
+        },
+        error: function(response) {
+            console.log('error: ' + JSON.stringify(response));
+        }
     });
 };
 
@@ -82,3 +104,4 @@ X3d.transformObjectByMatrix = function(object, transformationMatrix) {
         }
     }
 };
+

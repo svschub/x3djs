@@ -76,8 +76,9 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
             }
         },
 
-        createUvVectors = function(geometry, texCoordIndex, textureCoordinates) {
-            var faceVertices = [0, 0, 0],
+        createUvVectors = function(geometry, texCoordIndex, textureCoordinates, texture) {
+            var absTextureCoordinates = X3d.textureTree.getAbsoluteCoordinates(texture.name, textureCoordinates),
+                faceVertices = [0, 0, 0],
                 vertexCounter = 0;
 
             console.log('creating UV coordinates: ' + JSON.stringify(texCoordIndex) + ', ' + JSON.stringify(textureCoordinates));
@@ -91,9 +92,9 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
 
                     if (vertexCounter == 3) {
                         geometry.faceVertexUvs[0].push([
-                            new THREE.Vector2(textureCoordinates[faceVertices[0]].x, textureCoordinates[faceVertices[0]].y),
-                            new THREE.Vector2(textureCoordinates[faceVertices[1]].x, textureCoordinates[faceVertices[1]].y),
-                            new THREE.Vector2(textureCoordinates[faceVertices[2]].x, textureCoordinates[faceVertices[2]].y)
+                            new THREE.Vector2(absTextureCoordinates[faceVertices[0]].x, absTextureCoordinates[faceVertices[0]].y),
+                            new THREE.Vector2(absTextureCoordinates[faceVertices[1]].x, absTextureCoordinates[faceVertices[1]].y),
+                            new THREE.Vector2(absTextureCoordinates[faceVertices[2]].x, absTextureCoordinates[faceVertices[2]].y)
                         ]);
 
                         faceVertices[1] = index;
@@ -274,7 +275,12 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
         self.textureCoordinates.length > 0 &&
         self.texCoordIndex.length > 0) {
 
-        createUvVectors(geometry, self.texCoordIndex, self.textureCoordinates);
+        createUvVectors(
+            geometry, 
+            self.texCoordIndex, 
+            self.textureCoordinates,
+            appearance.texture
+        );
     }
 
     return new THREE.Mesh(

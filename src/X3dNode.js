@@ -68,7 +68,7 @@ X3d.Node.getInstance = function(node) {
             nodeInstance = new X3d.ColorNode(node);
             break;
         default:
-            throw new X3d.UnknownNodeException();
+            throw new X3d.UnknownNodeException(tagName);
     }
 
     return nodeInstance;
