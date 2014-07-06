@@ -77,7 +77,7 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
         },
 
         createUvVectors = function(geometry, texCoordIndex, textureCoordinates, texture) {
-            var absTextureCoordinates = X3d.textureTree.getAbsoluteCoordinates(texture.name, textureCoordinates),
+            var absTextureCoordinates = X3d.sceneLoader.textureTree.getAbsoluteCoordinates(texture.name, textureCoordinates),
                 faceVertices = [0, 0, 0],
                 vertexCounter = 0;
 

@@ -55,10 +55,10 @@ X3d.TransformNode.prototype.parse = function() {
 
             if (child instanceof THREE.Camera) {
                 X3d.transformObjectByMatrix(child, transformationMatrix);
-                X3d.sceneCamera = child;
+                X3d.sceneLoader.sceneCamera = child;
             } else if (child instanceof THREE.Light) {
                 X3d.transformObjectByMatrix(child, transformationMatrix);
-                X3d.lights.push(child);
+                X3d.sceneLoader.lights.push(child);
             } else {
                 object3d.add(child);
             }

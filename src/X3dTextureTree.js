@@ -13,18 +13,17 @@ X3d.TextureTree.prototype.loadFromXml = function(xmlDoc) {
     self.textures = {};
 
     texturesNode.children().each(function () {
-        self.parseTextureNode($(this), null);
+        self.parseTextureNode(self, $(this), null);
     });
 };
 
-X3d.TextureTree.prototype.parseTextureNode = function(node, parentId) {
-    var self = this,
-        attribute,
+X3d.TextureTree.prototype.parseTextureNode = function(self, textureNode, parentId) {
+    var attribute,
         textureId,
         texture = {},
         parentTexture;
 
-    attribute = node.attr('name');
+    attribute = textureNode.attr('name');
     if (!attribute) {
         throw new X3d.InvalidTextureException('Attribute name is mandatory');
     }
@@ -32,37 +31,40 @@ X3d.TextureTree.prototype.parseTextureNode = function(node, parentId) {
 
     textureId = X3d.TextureTree.getTextureIdByName(texture.name);
 
-    attribute = node.attr('url');
+    attribute = textureNode.attr('url');
     if (!parentId && !attribute) {
         throw new X3d.InvalidTextureException('Attribute url is mandatory for root level textures');
     }
     texture.url = attribute;
 
-    attribute = node.attr('width');
+    attribute = textureNode.attr('width');
     if (!attribute) {
         throw new X3d.InvalidTextureException('Attribute width is mandatory');
     }
     texture.width = parseInt(attribute);
 
-    attribute = node.attr('height');
+    attribute = textureNode.attr('height');
     if (!attribute) {
         throw new X3d.InvalidTextureException('Attribute height is mandatory');
     }
     texture.height = parseInt(attribute);
 
-    attribute = node.attr('left');
+    attribute = textureNode.attr('left');
     if (attribute) {
         texture.left = parseInt(attribute);
     }
 
-    attribute = node.attr('top');
+    attribute = textureNode.attr('top');
     if (attribute) {
         texture.top = parseInt(attribute);
     }
 
     if (parentId) {
         texture.parentId = parentId;
-        parentTexture = this.textures[parentId];
+        parentTexture = self.textures[parentId];
+        if (parentTexture.parentId) {
+            throw new X3d.Exception("Texture tree can only have hierarchy depth <= 2!");
+        }
 
         texture.ub = texture.left/parentTexture.width;
         texture.ua = texture.width/parentTexture.width;
@@ -75,10 +77,10 @@ X3d.TextureTree.prototype.parseTextureNode = function(node, parentId) {
         texture.loaded = false;
     }
 
-    this.textures[textureId] = texture;
+    self.textures[textureId] = texture;
 
-    node.children().each(function () {
-        self.parseTextureNode($(this), textureId);
+    textureNode.children().each(function () {
+        self.parseTextureNode(self, $(this), textureId);
     });
 };
 

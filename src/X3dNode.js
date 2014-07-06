@@ -80,8 +80,8 @@ X3d.Node.parse = function(node) {
         nodeInstance,
         parsedNode;
 
-    if (identifier && X3d.cachedNodes[identifier]) {
-        parsedNode = X3d.cachedNodes[identifier];
+    if (identifier && X3d.sceneLoader.cachedNodes[identifier]) {
+        parsedNode = X3d.sceneLoader.cachedNodes[identifier];
         console.log('cached node: ' + identifier);
     } else {
         if (node.attr('USE')) {
@@ -94,7 +94,7 @@ X3d.Node.parse = function(node) {
         parsedNode = nodeInstance.parse();
 
         if (identifier) {
-            X3d.cachedNodes[identifier] = parsedNode;
+            X3d.sceneLoader.cachedNodes[identifier] = parsedNode;
         }
     }
 
