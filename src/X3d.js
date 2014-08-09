@@ -18,8 +18,10 @@ X3d.getMaterial = function(node, appearance) {
     }
 
     if (appearance.texture && appearance.texture.name) {
-        texture = X3d.sceneLoader.textureTree.loadTexture(appearance.texture);
-        texture.needsUpdate = true;
+        texture = X3d.sceneLoader.textureTree.loadTexture(appearance.texture, function () {
+            texture.needsUpdate = true;
+        });
+
         properties.map = texture;
     }
 

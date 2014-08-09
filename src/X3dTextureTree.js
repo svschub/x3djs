@@ -84,7 +84,7 @@ X3d.TextureTree.prototype.parseTextureNode = function(self, textureNode, parentI
     });
 };
 
-X3d.TextureTree.prototype.loadTexture = function(textureProperties) {
+X3d.TextureTree.prototype.loadTexture = function(textureProperties, onLoadCallback) {
     var textureId = X3d.TextureTree.getTextureIdByName(textureProperties.name),
         parentTextureId,
         texture,
@@ -128,7 +128,7 @@ X3d.TextureTree.prototype.loadTexture = function(textureProperties) {
     if (texture.url && !texture.parentId && !texture.loaded) {
         // load only root level textures that are not yet loaded:
 
-        texture.data = THREE.ImageUtils.loadTexture(texture.url);
+        texture.data = THREE.ImageUtils.loadTexture(texture.url, THREE.UVMapping, onLoadCallback);
         texture.loaded = true;
     }
 
