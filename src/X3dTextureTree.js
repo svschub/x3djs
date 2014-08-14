@@ -74,7 +74,7 @@ X3d.TextureTree.prototype.parseTextureNode = function(self, textureNode, parentI
         texture.va = texture.height/parentTexture.height;
         // => v0 = va*v + vb
     } else {
-        texture.loaded = false;
+        texture.callbacks = [];
     }
 
     self.textures[textureId] = texture;
@@ -117,22 +117,45 @@ X3d.TextureTree.prototype.loadTexture = function(textureProperties, onLoadCallba
         this.textures[textureId] = {
             name: textureProperties.name,
             url: textureProperties.url,
-            loaded: false,
-            data: {}
+            callbacks: []
         }
 
         texture = this.textures[textureId];
         console.log('texture ' + textureId + ' not found in tree, loading ' + texture.url);
     }
 
-    if (texture.url && !texture.parentId && !texture.loaded) {
-        // load only root level textures that are not yet loaded:
+    if (texture.url && !texture.parentId) {
+        if (!texture.data) {
+            texture.data = new THREE.Texture(undefined, THREE.UVMapping);
+        }
 
-        texture.data = THREE.ImageUtils.loadTexture(texture.url, THREE.UVMapping, onLoadCallback);
-        texture.loaded = true;
+        // register callbacks only root level textures:
+        texture.callbacks.push(onLoadCallback);
     }
 
     return texture.data;
+};
+
+X3d.TextureTree.prototype.evaluateCallbacks = function () {
+    var self = this,
+        texture;
+
+    for (var textureId in self.textures) {
+        (function(id) {
+            var texture = self.textures[id],
+                loader = new THREE.ImageLoader();
+
+            if (!texture.parentId && texture.callbacks.length > 0) {
+                loader.load(texture.url, function(image) {
+                    texture.data.image = image;
+                    texture.data.needsUpdate = true;
+                    texture.callbacks.forEach(function(callback) {
+                        callback(texture.data);
+                    });
+                });
+            }
+        }(textureId));
+    }
 };
 
 X3d.TextureTree.prototype.getAbsoluteCoordinates = function(textureName, coordinates) {

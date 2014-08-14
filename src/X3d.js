@@ -18,7 +18,7 @@ X3d.getMaterial = function(node, appearance) {
     }
 
     if (appearance.texture && appearance.texture.name) {
-        texture = X3d.sceneLoader.textureTree.loadTexture(appearance.texture, function () {
+        texture = X3d.sceneLoader.textureTree.loadTexture(appearance.texture, function(loadedTexture) {
             texture.needsUpdate = true;
         });
 

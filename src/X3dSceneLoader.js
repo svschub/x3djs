@@ -33,6 +33,8 @@ X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile, onSuccessCallback
                 self.lights.forEach(function(light) {
                     self.scene.add(light);
                 });
+
+                self.textureTree.evaluateCallbacks();
             } catch (e) {
                 if (onErrorCallback) {
                     onErrorCallback(e);
