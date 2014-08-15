@@ -250,8 +250,11 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
     createGeometryVertices(geometry, vertices);
 
     geometry.faceVertexUvs[0] = [];
+
     geometry.computeFaceNormals();
     geometry.computeCentroids();
+    geometry.computeBoundingBox();
+    geometry.computeBoundingSphere();
 
     geometry.faces.forEach(function(face) {
         face.vertexNormals = [

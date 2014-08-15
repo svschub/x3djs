@@ -127,6 +127,7 @@ X3d.TextureTree.prototype.loadTexture = function(textureProperties, onLoadCallba
     if (texture.url && !texture.parentId) {
         if (!texture.data) {
             texture.data = new THREE.Texture(undefined, THREE.UVMapping);
+            texture.data.sourceFile = texture.url;
         }
 
         // register callbacks only root level textures:
