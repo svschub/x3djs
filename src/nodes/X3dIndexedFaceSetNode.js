@@ -253,8 +253,6 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
 
     geometry.computeFaceNormals();
     geometry.computeCentroids();
-    geometry.computeBoundingBox();
-    geometry.computeBoundingSphere();
 
     geometry.faces.forEach(function(face) {
         face.vertexNormals = [
@@ -288,6 +286,6 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
 
     return new THREE.Mesh(
         geometry,
-        X3d.getMaterial(self.node, appearance)
+        X3d.createMaterial(appearance.getMaterialProperties())
     );
 };

@@ -31,3 +31,35 @@ X3d.AppearanceNode.prototype.parse = function() {
 
     return self;
 };
+
+X3d.AppearanceNode.prototype.getMaterialProperties = function() {
+    var self = this,
+        properties = {},
+        texture,
+        isTransparent = (self.material.transparency && self.material.transparency > 0.0);
+
+    properties.shading = THREE.SmoothShading;
+ 
+    properties.vertexColors = THREE.VertexColors;
+
+    if (self.material.solid) {
+        properties.side = THREE.FrontSide;
+    } else {
+        properties.side = THREE.DoubleSide;
+    }
+
+    if (self.texture && self.texture.name) {
+        texture = X3d.sceneLoader.textureTree.loadTexture(self.texture, function(loadedTexture) {
+            texture.needsUpdate = true;
+        });
+
+        properties.map = texture;
+    }
+
+    if (isTransparent) {
+        properties.transparent = isTransparent;
+        properties.opacity = 1.0 - self.material.transparency;
+    }
+
+    return properties;
+};
