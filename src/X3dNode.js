@@ -85,7 +85,7 @@ X3d.Node.parse = function(node) {
         console.log('cached node: ' + identifier);
     } else {
         if (node.attr('USE')) {
-            nodeToParse = X3d.x3dSceneNode.find('[DEF="' + node.attr('USE') + '"]');
+            nodeToParse = X3d.sceneLoader.x3dSceneNode.find('[DEF="' + node.attr('USE') + '"]');
         } else {
             nodeToParse = node;
         }

@@ -286,6 +286,6 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
 
     return new THREE.Mesh(
         geometry,
-        X3d.createMaterial(appearance.getMaterialProperties())
+        X3d.sceneLoader.createMaterial(appearance.getMaterialProperties())
     );
 };

@@ -1,10 +1,12 @@
 X3d.SceneLoader = function () {
+    this.sceneNode = null;
     this.cachedNodes = {};
     this.background = {};
     this.scene = null;
     this.sceneCamera = null;
     this.lights = [];
     this.textureTree = new X3d.TextureTree();
+    this.createMaterial = this.createMaterialDefaultHandler;
 };
 
 X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile, onSuccessCallback, onErrorCallback) {
@@ -26,9 +28,9 @@ X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile, onSuccessCallback
         data: {},
         success: function(x3dResponse) {
             try {
-                X3d.x3dSceneNode = $(x3dResponse).find("Scene");
+                X3d.sceneLoader.x3dSceneNode = $(x3dResponse).find("Scene");
 
-                self.scene = X3d.Node.parse(X3d.x3dSceneNode);
+                self.scene = X3d.Node.parse(X3d.sceneLoader.x3dSceneNode);
 
                 self.lights.forEach(function(light) {
                     self.scene.add(light);
@@ -101,6 +103,14 @@ X3d.SceneLoader.prototype.loadTextureTreeFromXml = function(xmlFile, onSuccessCa
 X3d.SceneLoader.prototype.unloadTextureTree = function () {
     this.textureTree = new X3d.TextureTree();
 };
+
+X3d.SceneLoader.prototype.setCreateMaterialHandler = function(createMaterialHandler) {
+    this.createMaterial = createMaterialHandler;
+};
+
+X3d.SceneLoader.prototype.createMaterialDefaultHandler = function(properties) {
+    return new THREE.MeshLambertMaterial(properties);
+}
 
 X3d.SceneLoader.prototype.getScene = function () {
     return this.scene;
