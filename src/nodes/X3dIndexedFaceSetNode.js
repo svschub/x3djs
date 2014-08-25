@@ -81,7 +81,7 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
                 faceVertices = [0, 0, 0],
                 vertexCounter = 0;
 
-            console.log('creating UV coordinates: ' + JSON.stringify(texCoordIndex) + ', ' + JSON.stringify(textureCoordinates));
+//            console.log('creating UV coordinates: ' + JSON.stringify(texCoordIndex) + ', ' + JSON.stringify(textureCoordinates));
 
             texCoordIndex.forEach(function(index) {
                 if (index >= 0) {
@@ -114,7 +114,7 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
                 nConnectedFaces,
                 face1, face2;
 
-            console.log('computing vertex normals ...');
+//            console.log('computing vertex normals ...');
 
             faceIndex = 0;
             faces.forEach(function(face) {
@@ -195,10 +195,10 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
                     face.c = vertexMap[face.c];
                 });
 
-                console.log('creating geometry vertices: reduced: ' + vertexMapSize + ' of ' + vertices.length);
-                console.log(JSON.stringify(vertexMap));
+//                console.log('creating geometry vertices: reduced: ' + vertexMapSize + ' of ' + vertices.length);
+//                console.log(JSON.stringify(vertexMap));
             } else {
-                console.log('creating geometry vertices: all: ' + vertices.length);
+//                console.log('creating geometry vertices: all: ' + vertices.length);
                 vertices.forEach(function(vertex) {
                     geometry.vertices.push(vertex.clone());
                 });

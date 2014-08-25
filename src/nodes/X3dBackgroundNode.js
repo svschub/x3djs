@@ -31,7 +31,7 @@ X3d.BackgroundNode.prototype.parse = function() {
 
     X3d.background = background;
 
-    console.log('background: ' + JSON.stringify(background));
+//    console.log('background: ' + JSON.stringify(background));
 
     return null;
 };

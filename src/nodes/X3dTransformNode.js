@@ -28,7 +28,7 @@ X3d.TransformNode.prototype.parse = function() {
         );
         transformationMatrix.makeRotationFromQuaternion(quaternion);
 
-        console.log('rotation: ' + JSON.stringify(quaternion) + ', raw=' + JSON.stringify(result));
+//        console.log('rotation: ' + JSON.stringify(quaternion) + ', raw=' + JSON.stringify(result));
     } else {
         transformationMatrix.identity();
     }
@@ -37,14 +37,14 @@ X3d.TransformNode.prototype.parse = function() {
     if (attribute) {
         scale = self.parseVector3(attribute);
         transformationMatrix.scale(scale);
-        console.log('scale: ' + JSON.stringify(scale));
+//        console.log('scale: ' + JSON.stringify(scale));
     }
 
     attribute = self.node.attr('translation');
     if (attribute) {
         position = self.parseVector3(attribute);
         transformationMatrix.setPosition(position);
-        console.log('translation: ' + JSON.stringify(position));
+//        console.log('translation: ' + JSON.stringify(position));
     }
 
     this.node.children().each(function() {

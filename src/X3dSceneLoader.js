@@ -7,9 +7,12 @@ X3d.SceneLoader = function () {
     this.lights = [];
     this.textureTree = new X3d.TextureTree();
     this.createMaterial = this.createMaterialDefaultHandler;
+
+    this.deferred = null;
+    this.promise = null;
 };
 
-X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile, onSuccessCallback, onErrorCallback) {
+X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile) {
     var self = this;
 
     self.cachedNodes = {};
@@ -19,89 +22,55 @@ X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile, onSuccessCallback
 
     X3d.sceneLoader = self;
 
-    $.ajax({
-        url: x3dFile,
-        type: 'GET',
-        async: (typeof onSuccessCallback === "function"),
-        cache: false,
-        timeout: 30000,
-        data: {},
-        success: function(x3dResponse) {
-            try {
-                X3d.sceneLoader.x3dSceneNode = $(x3dResponse).find("Scene");
+    self.deferred = new $.Deferred();
+    self.promise = self.deferred.promise();
 
-                self.scene = X3d.Node.parse(X3d.sceneLoader.x3dSceneNode);
+    $.when(self.textureTree.getPromise()).then(function () {
+        return $.ajax({
+            url: x3dFile,
+            type: 'GET',
+            data: {}
+        });
+    }).done(function(x3dResponse) {
+        try {
+            X3d.sceneLoader.x3dSceneNode = $(x3dResponse).find("Scene");
 
-                self.lights.forEach(function(light) {
-                    self.scene.add(light);
-                });
+            self.scene = X3d.Node.parse(X3d.sceneLoader.x3dSceneNode);
 
-                self.textureTree.evaluateCallbacks();
-            } catch (e) {
-                if (onErrorCallback) {
-                    onErrorCallback(e);
-                } else {
-                    throw e;
-                }
-            }
+            self.lights.forEach(function(light) {
+                self.scene.add(light);
+            });
 
-            if (onSuccessCallback) {
-                onSuccessCallback();
-            }
-        },
-        error: function(response) {
-            var message = "Could not load scene from file " + x3dFile + "!";
-
-            if (onErrorCallback) {
-                onErrorCallback(message);
-            } else {
-                throw new X3d.Exception(message);
-            }
+            self.textureTree.evaluateCallbacks();
+            self.deferred.resolve(self.scene);
+        } catch (e) {
+            self.deferred.reject(e.message);
         }
+    }).fail(function(response) {
+        self.deferred.reject(response);
     });
+
+    return self.promise;
 };
 
-X3d.SceneLoader.prototype.loadTextureTreeFromXml = function(xmlFile, onSuccessCallback, onErrorCallback) {
+X3d.SceneLoader.prototype.getPromise = function () {
+    return this.promise;
+};
+
+X3d.SceneLoader.prototype.loadTextureTreeFromXml = function(xmlFile) {
     var self = this;
 
-    self.textureTree = new X3d.TextureTree();
+    self.textureTree.loadFromXml(xmlFile);
 
-    $.ajax({
-        url: xmlFile,
-        type: 'GET',
-        async: (typeof onSuccessCallback === "function"),
-        cache: false,
-        timeout: 30000,
-        data: {},
-        success: function(xmlResponse) {
-            try {
-                self.textureTree.loadFromXml($(xmlResponse));
-            } catch (e) {
-                if (onErrorCallback) {
-                    onErrorCallback(e);
-                } else {
-                    throw e;
-                }
-            }
-
-            if (onSuccessCallback) {
-                onSuccessCallback();
-            }
-        },
-        error: function(response) {
-            var message = "Could not load texture tree from file " + xmlFile + "!";
-
-            if (onErrorCallback) {
-                onErrorCallback(message);
-            } else {
-                throw new X3d.Exception(message);
-            }
-        }
-    });
+    return self.textureTree.getPromise();
 };
 
 X3d.SceneLoader.prototype.unloadTextureTree = function () {
     this.textureTree = new X3d.TextureTree();
+};
+
+X3d.SceneLoader.prototype.getPromise = function () {
+    return this.deferred.promise();
 };
 
 X3d.SceneLoader.prototype.setCreateMaterialHandler = function(createMaterialHandler) {

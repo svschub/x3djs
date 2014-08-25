@@ -61,8 +61,8 @@ X3d.SpotLightNode.prototype.parse = function() {
     light.target.position.copy(this.location);
     light.target.position.add(this.direction);
 
-    console.log('spotlight node: ' + JSON.stringify(this));
-    console.log('spotlight target: ' + JSON.stringify(light.target.position));
+//    console.log('spotlight node: ' + JSON.stringify(this));
+//    console.log('spotlight target: ' + JSON.stringify(light.target.position));
 
     return light;
 };

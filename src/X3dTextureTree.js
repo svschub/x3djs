@@ -1,20 +1,47 @@
 X3d.TextureTree = function () {
     this.textures = {};
+
+    this.deferred = new $.Deferred();
+    this.deferred.resolve();
+    this.promise = this.deferred.promise();
 };
 
 X3d.TextureTree.getTextureIdByName = function(textureName) {
     return textureName.replace('.', '_');
 };
 
-X3d.TextureTree.prototype.loadFromXml = function(xmlDoc) {
-    var self = this,
-        texturesNode = xmlDoc.find("textures");
+X3d.TextureTree.prototype.getPromise = function () {
+    return this.promise;  
+};
 
-    self.textures = {};
+X3d.TextureTree.prototype.loadFromXml = function(xmlFile) {
+    var self = this;
 
-    texturesNode.children().each(function () {
-        self.parseTextureNode(self, $(this), null);
+    self.deferred = new $.Deferred();
+    self.promise = self.deferred.promise();
+
+    $.when($.ajax({
+        url: xmlFile,
+        type: 'GET',
+        data: {}
+    })).done(function(xmlResponse) {
+        var texturesNode = $(xmlResponse).find("textures");
+
+        try {
+            self.textures = {};
+            texturesNode.children().each(function () {
+                self.parseTextureNode(self, $(this), null);
+            });
+
+            self.deferred.resolve();
+        } catch (e) {
+            self.deferred.reject(e.message);
+        }
+    }).fail(function(response) {
+        self.deferred.reject(response);
     });
+
+    return self.promise;
 };
 
 X3d.TextureTree.prototype.parseTextureNode = function(self, textureNode, parentId) {
@@ -165,7 +192,7 @@ X3d.TextureTree.prototype.getAbsoluteCoordinates = function(textureName, coordin
         u, v,
         absCoordinates = [];
 
-    console.log('texture UVs: ' + JSON.stringify(coordinates));
+//    console.log('texture UVs: ' + JSON.stringify(coordinates));
 
     if (this.textures[textureId] && this.textures[textureId].parentId) {
         console.log('texture ' + textureName + '(id=' + textureId + ') has parent with id=' + this.textures[textureId].parentId);
@@ -187,6 +214,6 @@ X3d.TextureTree.prototype.getAbsoluteCoordinates = function(textureName, coordin
         absCoordinates = coordinates;
     }
 
-    console.log('absolute UVs: ' + JSON.stringify(absCoordinates));
+//    console.log('absolute UVs: ' + JSON.stringify(absCoordinates));
     return absCoordinates;
 };

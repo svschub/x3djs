@@ -19,10 +19,10 @@ X3d.ShapeNode.prototype.parse = function() {
 
             if (child instanceof X3d.AppearanceNode) {
                 appearance = child;
-                console.log('appearance: ' + JSON.stringify(appearance));
+//                console.log('appearance: ' + JSON.stringify(appearance));
             } else if (child instanceof X3d.GeometryNode) {
                 geometryNodes.push(child);
-                console.log('geometry node: ' + JSON.stringify(child));
+//                console.log('geometry node: ' + JSON.stringify(child));
             }
         } catch (e) {
             throw e;
