@@ -74,33 +74,6 @@ X3d.Node.getInstance = function(node) {
     return nodeInstance;
 };
 
-X3d.Node.parse = function(node) {
-    var identifier = node.attr('DEF') || node.attr('USE'),
-        nodeToParse,
-        nodeInstance,
-        parsedNode;
-
-    if (identifier && X3d.sceneLoader.cachedNodes[identifier]) {
-        parsedNode = X3d.sceneLoader.cachedNodes[identifier];
-        console.log('cached node: ' + identifier);
-    } else {
-        if (node.attr('USE')) {
-            nodeToParse = X3d.sceneLoader.x3dSceneNode.find('[DEF="' + node.attr('USE') + '"]');
-        } else {
-            nodeToParse = node;
-        }
-
-        nodeInstance = X3d.Node.getInstance(nodeToParse);
-        parsedNode = nodeInstance.parse();
-
-        if (identifier) {
-            X3d.sceneLoader.cachedNodes[identifier] = parsedNode;
-        }
-    }
-
-    return parsedNode;
-};
-
 X3d.Node.prototype.parseArray = function(str, fcn) {
     var trimmedStr, 
         splitStr;

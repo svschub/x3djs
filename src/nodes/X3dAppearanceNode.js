@@ -4,7 +4,7 @@ X3d.AppearanceNode = function(node) {
 
 X3d.AppearanceNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.AppearanceNode.prototype.parse = function() {
+X3d.AppearanceNode.prototype.parse = function(sceneLoader) {
     var self = this;
 
     console.log('parsing X3D appearance');
@@ -13,7 +13,7 @@ X3d.AppearanceNode.prototype.parse = function() {
         var child, childNode = $(this);
 
         try {
-            child = X3d.Node.parse(childNode);
+            child = sceneLoader.parseX3dNode(childNode);
 
             if (child instanceof X3d.MaterialNode) {
                 self.material = child;
@@ -32,7 +32,7 @@ X3d.AppearanceNode.prototype.parse = function() {
     return self;
 };
 
-X3d.AppearanceNode.prototype.getMaterialProperties = function() {
+X3d.AppearanceNode.prototype.getMaterialProperties = function(sceneLoader) {
     var self = this,
         properties = {},
         texture,
@@ -49,7 +49,7 @@ X3d.AppearanceNode.prototype.getMaterialProperties = function() {
     }
 
     if (self.texture && self.texture.name) {
-        texture = X3d.sceneLoader.textureTree.loadTexture(self.texture, function(loadedTexture) {
+        texture = sceneLoader.textureTree.loadTexture(self.texture, function(loadedTexture) {
             texture.needsUpdate = true;
         });
 

@@ -4,7 +4,7 @@ X3d.ColorNode = function(node) {
 
 X3d.ColorNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.ColorNode.prototype.parse = function() {
+X3d.ColorNode.prototype.parse = function(sceneLoader) {
     var self = this,
         attribute,
         vectors,

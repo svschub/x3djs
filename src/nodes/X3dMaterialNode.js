@@ -4,7 +4,7 @@ X3d.MaterialNode = function(node) {
 
 X3d.MaterialNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.MaterialNode.prototype.parse = function() {
+X3d.MaterialNode.prototype.parse = function(sceneLoader) {
     var self = this,
         attribute,
         values;

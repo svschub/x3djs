@@ -4,7 +4,7 @@ X3d.BackgroundNode = function(node) {
 
 X3d.BackgroundNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.BackgroundNode.prototype.parse = function() {
+X3d.BackgroundNode.prototype.parse = function(sceneLoader) {
     var background = {},
         attribute,
         values;

@@ -4,14 +4,14 @@ X3d.DirectionalLightNode = function(node) {
 
 X3d.DirectionalLightNode.prototype = Object.create(X3d.LightNode.prototype);
 
-X3d.DirectionalLightNode.prototype.parse = function() {
+X3d.DirectionalLightNode.prototype.parse = function(sceneLoader) {
     var attribute,
         values,
         light;
 
     console.log('parsing X3D directional light');
 
-    this.parseBasicLightProperties();
+    this.parseBasicLightProperties(sceneLoader);
 
     attribute = this.node.attr('direction');
     if (attribute) {

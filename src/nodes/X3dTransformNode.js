@@ -4,7 +4,7 @@ X3d.TransformNode = function(node) {
 
 X3d.TransformNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.TransformNode.prototype.parse = function() {
+X3d.TransformNode.prototype.parse = function(sceneLoader) {
     var self = this,
         object3d = new THREE.Object3D(),
         attribute,
@@ -51,14 +51,14 @@ X3d.TransformNode.prototype.parse = function() {
         var child;
 
         try {
-            child = X3d.Node.parse($(this));
+            child = sceneLoader.parseX3dNode($(this));
 
             if (child instanceof THREE.Camera) {
                 X3d.transformObjectByMatrix(child, transformationMatrix);
-                X3d.sceneLoader.sceneCamera = child;
+                sceneLoader.sceneCamera = child;
             } else if (child instanceof THREE.Light) {
                 X3d.transformObjectByMatrix(child, transformationMatrix);
-                X3d.sceneLoader.lights.push(child);
+                sceneLoader.lights.push(child);
             } else {
                 object3d.add(child);
             }

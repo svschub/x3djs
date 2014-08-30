@@ -4,7 +4,7 @@ X3d.LightNode = function(node) {
 
 X3d.LightNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.LightNode.prototype.parseBasicLightProperties = function() {
+X3d.LightNode.prototype.parseBasicLightProperties = function(sceneLoader) {
     var attribute,
         values, 
         ambientIntensity,
@@ -45,7 +45,7 @@ X3d.LightNode.prototype.parseBasicLightProperties = function() {
             ambientColor = new THREE.Color();
             ambientColor.copy(this.color);
             ambientColor.multiplyScalar(ambientIntensity);
-            X3d.sceneLoader.lights.push(new THREE.AmbientLight(ambientColor.getHex()));
+            sceneLoader.lights.push(new THREE.AmbientLight(ambientColor.getHex()));
         }
     }
 };

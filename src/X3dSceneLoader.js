@@ -1,5 +1,5 @@
 X3d.SceneLoader = function () {
-    this.sceneNode = null;
+    this.x3dSceneNode = null;
     this.cachedNodes = {};
     this.background = {};
     this.scene = null;
@@ -15,15 +15,13 @@ X3d.SceneLoader = function () {
 X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile) {
     var self = this;
 
+    self.deferred = new $.Deferred();
+    self.promise = self.deferred.promise();
+
     self.cachedNodes = {};
     self.background = {};
     self.sceneCamera = null;
     self.lights = [];
-
-    X3d.sceneLoader = self;
-
-    self.deferred = new $.Deferred();
-    self.promise = self.deferred.promise();
 
     $.when(self.textureTree.getPromise()).then(function () {
         return $.ajax({
@@ -33,9 +31,9 @@ X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile) {
         });
     }).done(function(x3dResponse) {
         try {
-            X3d.sceneLoader.x3dSceneNode = $(x3dResponse).find("Scene");
+            self.x3dSceneNode = $(x3dResponse).find("Scene");
 
-            self.scene = X3d.Node.parse(X3d.sceneLoader.x3dSceneNode);
+            self.scene = self.parseX3dNode(self.x3dSceneNode);
 
             self.lights.forEach(function(light) {
                 self.scene.add(light);
@@ -51,6 +49,34 @@ X3d.SceneLoader.prototype.loadSceneFromX3d = function(x3dFile) {
     });
 
     return self.promise;
+};
+
+X3d.SceneLoader.prototype.parseX3dNode = function(node) {
+    var self = this,
+        identifier = node.attr('DEF') || node.attr('USE'),
+        nodeToParse,
+        nodeInstance,
+        parsedNode;
+
+    if (identifier && self.cachedNodes[identifier]) {
+        parsedNode = self.cachedNodes[identifier];
+        console.log('cached node: ' + identifier);
+    } else {
+        if (node.attr('USE')) {
+            nodeToParse = self.x3dSceneNode.find('[DEF="' + node.attr('USE') + '"]');
+        } else {
+            nodeToParse = node;
+        }
+
+        nodeInstance = X3d.Node.getInstance(nodeToParse);
+        parsedNode = nodeInstance.parse(self);
+
+        if (identifier) {
+            self.cachedNodes[identifier] = parsedNode;
+        }
+    }
+
+    return parsedNode;
 };
 
 X3d.SceneLoader.prototype.getPromise = function () {

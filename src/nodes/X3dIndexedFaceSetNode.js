@@ -4,7 +4,7 @@ X3d.IndexedFaceSetNode = function(node) {
 
 X3d.IndexedFaceSetNode.prototype = Object.create(X3d.GeometryNode.prototype);
 
-X3d.IndexedFaceSetNode.prototype.parse = function() {
+X3d.IndexedFaceSetNode.prototype.parse = function(sceneLoader) {
     var self = this,
         child,
         attribute,
@@ -42,7 +42,7 @@ X3d.IndexedFaceSetNode.prototype.parse = function() {
         var childNode = $(this);
 
         try {
-            child = X3d.Node.parse(childNode);
+            child = sceneLoader.parseX3dNode(childNode);
             
             if (child instanceof X3d.CoordinateNode) {
                 self.vertexCoordinates = child.coordinates;
@@ -57,7 +57,7 @@ X3d.IndexedFaceSetNode.prototype.parse = function() {
     return self;
 };
 
-X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
+X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance, sceneLoader) {
     var self = this,
 
         geometry = new THREE.Geometry(),
@@ -77,7 +77,7 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
         },
 
         createUvVectors = function(geometry, texCoordIndex, textureCoordinates, texture) {
-            var absTextureCoordinates = X3d.sceneLoader.textureTree.getAbsoluteCoordinates(texture.name, textureCoordinates),
+            var absTextureCoordinates = sceneLoader.textureTree.getAbsoluteCoordinates(texture.name, textureCoordinates),
                 faceVertices = [0, 0, 0],
                 vertexCounter = 0;
 
@@ -286,6 +286,6 @@ X3d.IndexedFaceSetNode.prototype.createMesh = function(appearance) {
 
     return new THREE.Mesh(
         geometry,
-        X3d.sceneLoader.createMaterial(appearance.getMaterialProperties())
+        sceneLoader.createMaterial(appearance.getMaterialProperties(sceneLoader))
     );
 };

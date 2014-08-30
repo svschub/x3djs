@@ -4,14 +4,14 @@ X3d.PointLightNode = function(node) {
 
 X3d.PointLightNode.prototype = Object.create(X3d.LightNode.prototype);
 
-X3d.PointLightNode.prototype.parse = function() {
+X3d.PointLightNode.prototype.parse = function(sceneLoader) {
     var attribute,
         values, 
         light;
 
     console.log('parsing X3D point light');
 
-    this.parseBasicLightProperties();
+    this.parseBasicLightProperties(sceneLoader);
 
     attribute = this.node.attr('radius');
     if (attribute) {

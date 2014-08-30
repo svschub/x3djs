@@ -4,7 +4,7 @@ X3d.LinePropertiesNode = function(node) {
 
 X3d.LinePropertiesNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.LinePropertiesNode.prototype.parse = function() {
+X3d.LinePropertiesNode.prototype.parse = function(sceneLoader) {
     var self = this,
         attribute,
         values;

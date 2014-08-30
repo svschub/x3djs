@@ -4,7 +4,7 @@ X3d.TextureCoordinateNode = function(node) {
 
 X3d.TextureCoordinateNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.TextureCoordinateNode.prototype.parse = function() {
+X3d.TextureCoordinateNode.prototype.parse = function(sceneLoader) {
     var self = this,
         attribute;
 

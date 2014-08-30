@@ -4,7 +4,7 @@ X3d.TextureTransformNode = function(node) {
 
 X3d.TextureTransformNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.TextureTransformNode.prototype.parse = function() {
+X3d.TextureTransformNode.prototype.parse = function(sceneLoader) {
     var self = this,
         attribute,
         values;

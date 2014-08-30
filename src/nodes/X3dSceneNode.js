@@ -4,7 +4,7 @@ X3d.SceneNode = function(node) {
 
 X3d.SceneNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.SceneNode.prototype.parse = function() {
+X3d.SceneNode.prototype.parse = function(sceneLoader) {
     var scene = new THREE.Scene(),
         child;
 
@@ -12,7 +12,7 @@ X3d.SceneNode.prototype.parse = function() {
 
     this.node.children().each(function () {
         try {
-            child = X3d.Node.parse($(this));
+            child = sceneLoader.parseX3dNode($(this));
             if (child !== null) {
                 scene.add(child);
             }

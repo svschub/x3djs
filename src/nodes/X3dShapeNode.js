@@ -4,7 +4,7 @@ X3d.ShapeNode = function(node) {
 
 X3d.ShapeNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.ShapeNode.prototype.parse = function() {
+X3d.ShapeNode.prototype.parse = function(sceneLoader) {
     var child,
         appearance = {},
         geometryNodes = [],
@@ -15,7 +15,7 @@ X3d.ShapeNode.prototype.parse = function() {
 
     this.node.children().each(function() {
         try {
-            child = X3d.Node.parse($(this));
+            child = sceneLoader.parseX3dNode($(this));
 
             if (child instanceof X3d.AppearanceNode) {
                 appearance = child;
@@ -30,7 +30,7 @@ X3d.ShapeNode.prototype.parse = function() {
     });
 
     geometryNodes.forEach(function(geometryNode) {
-        mesh = geometryNode.createMesh(appearance);
+        mesh = geometryNode.createMesh(appearance, sceneLoader);
     });
 
     return mesh;

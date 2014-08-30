@@ -4,7 +4,7 @@ X3d.IndexedLineSetNode = function(node) {
 
 X3d.IndexedLineSetNode.prototype = Object.create(X3d.GeometryNode.prototype);
 
-X3d.IndexedLineSetNode.prototype.parse = function() {
+X3d.IndexedLineSetNode.prototype.parse = function(sceneLoader) {
     var self = this,
         child,
         attribute;
@@ -25,7 +25,7 @@ X3d.IndexedLineSetNode.prototype.parse = function() {
         var childNode = $(this);
 
         try {
-            child = X3d.Node.parse(childNode);
+            child = sceneLoader.parseX3dNode(childNode);
 
             if (child instanceof X3d.CoordinateNode) {
                 self.vertexCoordinates = child.coordinates;
@@ -41,7 +41,7 @@ X3d.IndexedLineSetNode.prototype.parse = function() {
 };
 
 
-X3d.IndexedLineSetNode.prototype.createMesh = function(appearance) {
+X3d.IndexedLineSetNode.prototype.createMesh = function(appearance, sceneLoader) {
     var self = this,
         lines = new THREE.Object3D(),
         lineStripGeometry,

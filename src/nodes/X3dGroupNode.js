@@ -4,7 +4,7 @@ X3d.GroupNode = function(node) {
 
 X3d.GroupNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.GroupNode.prototype.parse = function() {
+X3d.GroupNode.prototype.parse = function(sceneLoader) {
     var object3d = new THREE.Object3D(),
         child;
 
@@ -12,7 +12,7 @@ X3d.GroupNode.prototype.parse = function() {
 
     this.node.children().each(function() {
         try {
-            child = X3d.Node.parse($(this));
+            child = sceneLoader.parseX3dNode($(this));
             object3d.add(child);
         } catch (e) {
             throw e;

@@ -4,7 +4,7 @@ X3d.ImageTextureNode = function(node) {
 
 X3d.ImageTextureNode.prototype = Object.create(X3d.Node.prototype);
 
-X3d.ImageTextureNode.prototype.parse = function() {
+X3d.ImageTextureNode.prototype.parse = function(sceneLoader) {
     var self = this,
         attribute,
         matches;
